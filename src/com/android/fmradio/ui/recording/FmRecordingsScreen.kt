@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,7 +65,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
@@ -78,6 +78,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -294,7 +295,7 @@ fun FmRecordingsScreen(
             },
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -304,7 +305,8 @@ fun FmRecordingsScreen(
                             text = stringResource(R.string.fm_over_record_list),
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontFamily = titleFont,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 20.sp
                             ),
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -408,28 +410,29 @@ fun FmRecordingsScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .heightIn(min = 64.dp)
                                 .clickable { togglePlayback(item) },
-                            shape = RoundedCornerShape(20.dp),
+                            shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (currentlyPlayingItem?.uri == item.uri) {
-                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+                                    MaterialTheme.colorScheme.primaryContainer
                                 } else {
-                                    MaterialTheme.colorScheme.surfaceContainerHigh
+                                    MaterialTheme.colorScheme.surfaceVariant
                                 }
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                            )
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                                    .heightIn(min = 64.dp)
+                                    .padding(horizontal = 16.dp, vertical = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 // Play / Pause Button
                                 FilledTonalIconButton(
                                     onClick = { togglePlayback(item) },
-                                    modifier = Modifier.size(48.dp),
-                                    shape = RoundedCornerShape(16.dp),
+                                    modifier = Modifier.size(44.dp),
+                                    shape = RoundedCornerShape(14.dp),
                                     colors = IconButtonDefaults.filledTonalIconButtonColors(
                                         containerColor = if (isThisPlaying) {
                                             MaterialTheme.colorScheme.primary
@@ -446,7 +449,7 @@ fun FmRecordingsScreen(
                                     Icon(
                                         imageVector = if (isThisPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                                         contentDescription = null,
-                                        modifier = Modifier.size(26.dp)
+                                        modifier = Modifier.size(24.dp)
                                     )
                                 }
 
@@ -456,7 +459,7 @@ fun FmRecordingsScreen(
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = item.title,
-                                        style = MaterialTheme.typography.titleMedium.copy(
+                                        style = MaterialTheme.typography.bodyLarge.copy(
                                             fontFamily = bodyFont,
                                             fontWeight = FontWeight.SemiBold
                                         ),
@@ -478,17 +481,15 @@ fun FmRecordingsScreen(
                                     Spacer(modifier = Modifier.height(2.dp))
 
                                     Text(
-                                        text = "$durationStr$formattedFileSize",
-                                        style = MaterialTheme.typography.labelMedium.copy(fontFamily = bodyFont),
-                                        color = MaterialTheme.colorScheme.primary,
-                                        maxLines = 1
-                                    )
-
-                                    Text(
-                                        text = formattedDate,
-                                        style = MaterialTheme.typography.labelSmall.copy(fontFamily = bodyFont),
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                                        maxLines = 1
+                                        text = "$durationStr$formattedFileSize • $formattedDate",
+                                        style = MaterialTheme.typography.bodySmall.copy(fontFamily = bodyFont),
+                                        color = if (currentlyPlayingItem?.uri == item.uri) {
+                                            MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                        },
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
 
